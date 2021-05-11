@@ -77,6 +77,7 @@ public class SimpleThreadPool implements ThreadPool {
 
     private final Object nextRunnableLock = new Object();
 
+    // 打工人
     private List<WorkerThread> workers;
     private LinkedList<WorkerThread> availWorkers = new LinkedList<WorkerThread>();
     private LinkedList<WorkerThread> busyWorkers = new LinkedList<WorkerThread>();
@@ -233,7 +234,7 @@ public class SimpleThreadPool implements ThreadPool {
     }
 
     public void initialize() throws SchedulerConfigException {
-
+        // xuzhou threadPool init start
         if (workers != null && workers.size() > 0) // already initialized...
             return;
 
@@ -246,16 +247,17 @@ public class SimpleThreadPool implements ThreadPool {
                     "Thread priority must be > 0 and <= 9");
         }
 
+        // 线程是否继承初始化线程组
         if (isThreadsInheritGroupOfInitializingThread()) {
             threadGroup = Thread.currentThread().getThreadGroup();
         } else {
+            // 遵循threadGroup树到根线程组。
             // follow the threadGroup tree to the root thread group.
             threadGroup = Thread.currentThread().getThreadGroup();
             ThreadGroup parent = threadGroup;
             while (!parent.getName().equals("main")) {
                 threadGroup = parent;
-                parent = threadGroup.getParent();
-            }
+                parent = threadGroup.getParent();            }
             threadGroup = new ThreadGroup(parent, schedulerInstanceName + "-SimpleThreadPool");
             if (isMakeThreadsDaemons()) {
                 threadGroup.setDaemon(true);
